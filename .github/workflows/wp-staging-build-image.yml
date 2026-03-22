@@ -6,6 +6,8 @@ on:
     branches:
       - master
       - 'release/homelab/*'
+    paths-ignore:
+      - 'devops/**'
 
 concurrency:
   group: 'build-staging'
