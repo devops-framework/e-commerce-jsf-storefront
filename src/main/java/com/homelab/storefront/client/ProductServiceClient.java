@@ -17,7 +17,7 @@ public class ProductServiceClient {
     private String productServiceBaseUrl;
 
     public String getProductById(String id) {
-        String fullUrl = "http://" + productServiceBaseUrl;
+        String fullUrl = "http://" + productServiceBaseUrl.trim();
 
         if (id == null || id.trim().isEmpty()) {
             return "{\"error\": \"Product ID cannot be empty\"}";

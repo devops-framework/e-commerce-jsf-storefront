@@ -17,7 +17,8 @@ public class OrderServiceClient {
     private String orderServiceBaseUrl;
 
     public String getOrderById(String id) {
-        String fullUrl = "http://" + orderServiceBaseUrl;
+        // .trim() handles potential spaces or newlines from the environment source
+        String fullUrl = "http://" + orderServiceBaseUrl.trim();
 
         if (id == null || id.trim().isEmpty()) {
             return "{\"error\": \"Order ID cannot be empty\"}";
