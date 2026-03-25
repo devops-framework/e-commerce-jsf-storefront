@@ -1,12 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: storefront
-  namespace: frontend-stg
+  name: "storefront-{{ .Values.envt }}"
   labels:
     app: storefront
 spec:
-  replicas: "{{ .Values.replicaCount }}"
+  replicas: "{{ .Values.replicaCount | default 1 }}"
   selector:
     matchLabels:
       app: storefront
@@ -18,8 +17,8 @@ spec:
       containers:
         - name: storefront
           # Giả định tên image, bạn hãy cập nhật nếu khác
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default 'latest' }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy | default 'IfNotPresent' }}"
           ports:
             - containerPort: 8080
           env:
