@@ -18,7 +18,7 @@ spec:
       containers:
         - name: storefront
           # Giả định tên image, bạn hãy cập nhật nếu khác
-          image: tantran0411/e-commerce-front:homelab-v1
+          image: tantran0411/e-commerce-jsf:gha-staging-master-c513a31
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
