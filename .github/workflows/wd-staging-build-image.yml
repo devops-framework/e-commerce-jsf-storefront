@@ -1,17 +1,11 @@
-name: Build ec-storefront for STG
+name: Manual build ec-storefront for STG
 run-name: 'Build e-commerce-storefront and push Docker image for Staging'
 
 on:
-  push:
-    branches:
-      - master
-      - 'release/homelab/*'
-    paths-ignore:
-      - 'devops/**'
-      - '.github/**'
+  workflow_dispatch:
 
 concurrency:
-  group: 'build-staging'
+  group: 'manual-build-staging'
   cancel-in-progress: true
 
 jobs:
@@ -25,18 +19,23 @@ jobs:
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: 'start'
-          title: '🚀 Start build e-commerce-jsf'
+          title: '🚀 Start build e-commerce-storefront'
           message: |
             **Actor:** ${{ github.actor }}
-            **Action:** On-push
+            **Action:** Manual
             **Branch:** `${{ github.ref_name }}`
 
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GIHUB_PAT }}
+          fetch-depth: 0
 
-      - name: Set short SHA
-        id: get-short-sha
-        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      - name: Set IMAGE_TAG
+        id: get-image-tag
+        run: |
+          echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          echo "image_tag=gha-staging-${{ github.ref_name }}-${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Run Docker Build & Push
         id: docker-build-push
@@ -45,25 +44,8 @@ jobs:
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
           image_name: "e-commerce-jsf"
-          image_tag: "gha-staging-${{ github.ref_name }}-${{ steps.get-short-sha.outputs.short_sha }}"
+          image_tag: ${{ steps.get-image-tag.outputs.image_tag }}
           dockerfile_path: "./devops/ci/docker/staging/Dockerfile"
-
-      - name: Update Image Tag in Deployment
-        shell: bash
-        run: |
-          IMAGE_TAG="${{ steps.get-image-tag.outputs.image_tag }}"
-          MANIFEST_PATH="devops/cd/k8s/staging/apps/deployment.yml"
-          
-          sed -i "s|image: tantran0411/e-commerce-jsf:.*|image: tantran0411/e-commerce-jsf:$IMAGE_TAG|g" $MANIFEST_PATH
-
-      - name: Commit and Push changes
-        id: auto-commit-step
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(staging): Auto pin image to ${{ steps.get-image-tag.outputs.short_sha }}"
-          file_pattern: 'devops/cd/k8s/staging/apps/deployment.yml'
-          branch: ${{ github.ref_name }}
-          repository: .
 
       - name: Discord result notification
         if: always()
@@ -75,7 +57,6 @@ jobs:
           message: |
             **Status:** ${{ job.status }}
             **Actor:** ${{ github.actor }}
-            **Action:** On-push
+            **Action:** Manual
             **Branch:** `${{ github.ref_name }}`
             **Image Tag:** [${{ steps.get-image-tag.outputs.image_tag || 'None' }}](${{ steps.docker-build-push.outputs.dockerhub_url }})
-            **Manifest Change:** ${{ steps.auto-commit-step.outputs.changes_detected == 'true' && format('[{1}](https://github.com/{0}/commit/{1})', github.repository, steps.auto-commit-step.outputs.commit_hash) || 'No changes' }}
