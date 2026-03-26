@@ -6,7 +6,7 @@ metadata:
   labels:
     app: storefront
 spec:
-  replicas: "{{ .Values.replicaCount }}"
+  replicas: 1
   selector:
     matchLabels:
       app: storefront
@@ -18,17 +18,19 @@ spec:
       containers:
         - name: storefront
           # Giả định tên image, bạn hãy cập nhật nếu khác
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: tantran0411/e-commerce-front:homelab-v1
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
             # MicroProfile Config tự động map biến môi trường này vào @ConfigProperty(name = "order.service.base.url")
             # Code java tự thêm "http://", nên ở đây chỉ điền host:port
             - name: ORDER_SERVICE_BASE_URL
-              value: "{{ .Values.orderServiceHost }}:{{ .Values.orderServicePort }}"
+              value: "order-service.ec-stg:8080"
+            
+            # Map vào @ConfigProperty(name = "product.service.base.url")
             - name: PRODUCT_SERVICE_BASE_URL
-              value: "{{ .Values.productServiceHost }}:{{ .Values.productServicePort }}"
+              value: "product-service-svc.ec-stg:8080"
           resources:
             limits:
               memory: "512Mi"
