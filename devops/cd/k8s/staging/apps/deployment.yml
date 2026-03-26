@@ -31,7 +31,22 @@ spec:
             # Map vào @ConfigProperty(name = "product.service.base.url")
             - name: PRODUCT_SERVICE_BASE_URL
               value: "product-service-svc.ec-stg:8080"
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
           resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
             limits:
               memory: "512Mi"
               cpu: "500m"
