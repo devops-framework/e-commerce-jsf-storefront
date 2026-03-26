@@ -26,11 +26,11 @@ spec:
             # MicroProfile Config tự động map biến môi trường này vào @ConfigProperty(name = "order.service.base.url")
             # Code java tự thêm "http://", nên ở đây chỉ điền host:port
             - name: ORDER_SERVICE_BASE_URL
-              value: "order-service.ec-stg:8080"
+              value: "order-service.backend-stg:8080"
             
             # Map vào @ConfigProperty(name = "product.service.base.url")
             - name: PRODUCT_SERVICE_BASE_URL
-              value: "product-service-svc.ec-stg:8080"
+              value: "product-service-svc.backend-stg:8080"
           livenessProbe:
             httpGet:
               path: /health/live
