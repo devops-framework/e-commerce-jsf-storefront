@@ -1,6 +1,6 @@
 apiVersion: v2
 name: e-commerce-storefront
-description: frontend
+description: apps, critical changes
 type: application
 version: 0.1.0
 appVersion: "1.0.0"

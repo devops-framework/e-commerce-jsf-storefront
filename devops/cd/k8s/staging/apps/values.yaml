@@ -1,0 +1,11 @@
+replicaCount: 1
+image:
+  repository: tantran0411/e-commerce-front
+  tag: homelab-v1
+  pullPolicy: Always
+
+orderServiceHost: 192.168.56.14 
+orderServicePort: 30201
+
+productServiceHost: 192.168.56.14
+productServicePort: 30200
