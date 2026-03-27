@@ -17,10 +17,11 @@ concurrency:
 jobs:
   build:
     name: e-commerce-storefront-jsf
-    uses: devops-framework/iac-vagrant-k8s-cluster-local/.github/workflows/wc-reusable-auto-build-image.yml@develop/homelab/add-reuseable-build-image-workflow
+    uses: devops-framework/iac-vagrant-k8s-cluster-local/.github/workflows/wc-reusable-auto-build-image.yml@dev
     permissions:
       contents: write
     with:
       app_name: 'e-commerce-jsf'
       gha_environment: staging
+      dockerfile_path: "./devops/ci/docker/staging/Dockerfile"
     secrets: inherit

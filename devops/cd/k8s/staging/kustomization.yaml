@@ -9,5 +9,6 @@ resources:
   - apps/deployment.yml
   - apps/service.yml
   - infra/override-setting-configmap.yml
+  - infra/ingress-controller.yml
 
 namespace: frontend-stg
