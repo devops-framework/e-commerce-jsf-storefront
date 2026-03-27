@@ -43,6 +43,10 @@ jobs:
         id: get-short-sha
         run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
+      - name: Set image tag
+        id: get-image-tag
+        run: echo "image_tag=gha-staging-${{ github.ref_name }}-${{ steps.get-short-sha.outputs.short_sha }}" >> $GITHUB_OUTPUT
+
       - name: Run Docker Build & Push
         id: docker-build-push
         uses: devops-framework/iac-vagrant-k8s-cluster-local/.github/actions/dockerhub-build-push@dev
@@ -50,7 +54,7 @@ jobs:
           docker_username: ${{ secrets.DOCKER_USERNAME }}
           docker_password: ${{ secrets.DOCKER_PASSWORD }}
           image_name: ${{ env.app-name }}
-          image_tag: "gha-staging-${{ github.ref_name }}-${{ steps.get-short-sha.outputs.short_sha }}"
+          image_tag: ${{ steps.get-image-tag.outputs.image_tag }}
           dockerfile_path: "./devops/ci/docker/staging/Dockerfile"
 
       - name: Update Image Tag in Deployment
@@ -67,7 +71,7 @@ jobs:
         id: auto-commit-step
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(staging): Auto pin image to ${{ steps.get-image-tag.outputs.short_sha }}"
+          commit_message: "chore(staging): Auto pin image to ${{ steps.get-short-sha.outputs.short_sha }}"
           file_pattern: '${{ steps.updated_image_tag.outputs.manifest_path }}'
           branch: ${{ github.ref_name }}
           repository: .
