@@ -22,15 +22,9 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-          env:
-            # MicroProfile Config tự động map biến môi trường này vào @ConfigProperty(name = "order.service.base.url")
-            # Code java tự thêm "http://", nên ở đây chỉ điền host:port
-            - name: ORDER_SERVICE_BASE_URL
-              value: "order-service.backend-stg:8080"
-            
-            # Map vào @ConfigProperty(name = "product.service.base.url")
-            - name: PRODUCT_SERVICE_BASE_URL
-              value: "product-service-svc.backend-stg:8080"
+          envFrom:
+            - configMapRef:
+                name: storefront-override-config
           livenessProbe:
             httpGet:
               path: /health/live
