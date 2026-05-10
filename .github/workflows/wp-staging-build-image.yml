@@ -9,6 +9,7 @@ on:
     paths-ignore:
       - 'devops/**'
       - '.github/**'
+  create:
 
 concurrency:
   group: 'build-staging'
@@ -17,7 +18,7 @@ concurrency:
 jobs:
   build:
     name: e-commerce-storefront-jsf
-    uses: devops-framework/iac-vagrant-k8s-cluster-local/.github/workflows/wc-reusable-auto-build-image.yml@develop/homelab/centralized-k8s-manifest
+    uses: devops-framework/iac-vagrant-k8s-cluster-local/.github/workflows/wc-reusable-auto-build-image.yml@dev
     permissions:
       contents: write
     with:
